@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { PlusCircle, Check, Trash } from 'phosphor-react'
-
+import { PlusCircle } from 'phosphor-react'
+import { Button } from './components/Button'
+import { ItemList } from './components/ItemList'
 import styles from './App.module.css'
 
 export function App() {
@@ -41,7 +42,7 @@ export function App() {
     setTasks(filteredTasks)
   }
 
-  function handleToggleTask( id, value ) {
+  function handleToggleTask({ id, value }) {
     const updatedTasks = tasks.map((task) => {
       if (task.id === id) {
         return { ...task, isChecked: value }
@@ -68,9 +69,9 @@ export function App() {
             value={inputValue}
           />
 
-          <button type='button' className={styles.button} onClick={handleAddTask}>
+          <Button type='button' onClick={handleAddTask}>
             Criar <PlusCircle size={16} color="#f2f2f2" weight="bold" />
-          </button>
+          </Button>
       
         </div>
 
@@ -92,32 +93,14 @@ export function App() {
 
           {tasks.length > 0 ? (
            <div className={styles.tasksListContent}>
-            {tasks.map((task) => {
-               const checkboxCheckedClassname = task.isChecked
-               ? styles['checkbox-checked']
-               : styles['checkbox-unchecked']
-             const paragraphCheckedClassname = task.isChecked
-               ? styles['paragraph-checked']
-               : ''
-              return (             
-              <div className={styles.tasksListContentItem} key={task.id}>
-                  <div>
-                    <label htmlFor="checkbox" onClick={() => handleToggleTask(task.id, !task.isChecked )}>
-                      <input readOnly type="checkbox" checked={task.isChecked} />
-                      <span className={`${styles.checkbox} ${checkboxCheckedClassname}`}>
-                        {task.isChecked && <Check size={12} />}
-                      </span>
-
-                      <p className={`${styles.paragraph} ${paragraphCheckedClassname}`}>{task.text}</p>
-                    </label>
-
-                    <button type='button' onClick={() => handleRemoveTask(task.id)}>
-                      <Trash size={16} color="#808080" />
-                    </button>
-                  </div>
-                </div>
-              )
-            })}
+            {tasks.map((task) => (
+               <ItemList
+                  key={task.id}
+                  data={task}
+                  removeTask={handleRemoveTask}
+                  toggleTaskStatus={handleToggleTask}
+              />
+            ))}
           </div>
           ) : (
             <div className={styles.empty}>
